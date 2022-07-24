@@ -56,6 +56,7 @@ def parsemethod(name, method, index):
 
 print('''
 #include <stdarg.h>
+#include <cstdio>
 struct pycallback {
     int parameters;
     long long(*callback)(long long *a);
@@ -93,7 +94,6 @@ for name, methods in classes.items():
 print('extern "C" {')
 for function in functions:
     if function == 'main': continue
-    if function == 'Serial': continue
     if 'gcov' in function: continue
     pycallbacks[function] = index
     print('''
@@ -105,7 +105,7 @@ long long %(function)s(long long a, ...)
         va_list args;
         va_start(args, a);
         buf[0] = a;
-        for (int i = %(index)i; i < parameters; i++) {
+        for (int i = 1; i < parameters; i++) {
             buf[i] = va_arg(args, long long);
         }
         va_end(args);
