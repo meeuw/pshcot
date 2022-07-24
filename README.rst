@@ -15,8 +15,9 @@ Usage
 - Use the following template (GNU Make) Makefile, I'll be testing do_mounts.o from the Linux kernel so do a search & replace for do_mounts.
 .. code-block:: Makefile
  
+  CFLAGS=-fPIC -fprofile-arcs -ftest-coverage
   do_mounts.so: do_mounts.o stubs.o libhook.so
-  	g++ -L. -lhook -shared -fPIC -Wl,-soname,do_mounts.so -o do_mounts.so $^
+  	g++ -L. -lhook -shared -fPIC -Wl,-soname,do_mounts.so -o do_mounts.so -fprofile-arcs -ftest-coverage $^
   stubs.o: stubs.cpp
   	g++ -fPIC -c $<
   stubs.cpp: errors.txt generate.py
@@ -26,7 +27,7 @@ Usage
   libhook.so: libhook.cpp
   	g++ -shared -fPIC -Wl,-soname,libhook.so -o libhook.so libhook.cpp
   clean:
-  	rm -f errors.txt do_mounts.so stubs.cpp stubs.o libhook.so
+  	rm -f errors.txt do_mounts.so do_mounts.o stubs.cpp stubs.o libhook.so
  
  
 - Run make, it will generate do_mounts.so by generating stubs.cpp from the gcc linker errors when linking do_mounts.o.
